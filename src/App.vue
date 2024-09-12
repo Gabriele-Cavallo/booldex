@@ -1,9 +1,11 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+  import AppHeader from './components/AppHeader.vue'
+  import AppPokedex from './components/AppPokedex.vue'
 </script>
 
 <template>
-  <h1>Hello world!</h1>
+  <AppHeader />
+  <AppPokedex />
 </template>
 
 <style scoped>
