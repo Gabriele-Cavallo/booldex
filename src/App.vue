@@ -28,7 +28,9 @@
 
 <template>
   <AppHeader />
-  <AppPokedex />
+  <main>
+    <AppPokedex />
+  </main>
 </template>
 
 <style scoped>
