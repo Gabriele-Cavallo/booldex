@@ -14,10 +14,13 @@
             }
         },
         methods: {
+            // Funzione che cerca il singolo pokemon tramite user input
             getSinglePokemon(singlePokemonSearch){
                 axios.get(`https://pokeapi.co/api/v2/pokemon/${singlePokemonSearch.toLowerCase().trim()}/`)
                 .then(response => this.searchedPokemon = response.data)
             },
+
+            // Funzione che a intervalli di 1.5s alterna la gif mostrata e se è attivo un intervall pulisce l'id
             alternateGif(){{
                 if (this.intervalId) {
                     clearInterval(this.intervalId);
@@ -31,15 +34,21 @@
                     }
                 }, 1500)
             }},
+
+            // Funzione che richiama le funzioni getSinglePokemon e alternateGif
             pokemonSearchHandler(userInput){
                 this.getSinglePokemon(userInput),
                 this.alternateGif()
             },
+
+            // Funzione che "cattura" il pokemon scelto nell'array myPokemon e nel local storage
             catchPokemon(userInput){
                 const storedPokemon = userInput[0].toUpperCase() + userInput.slice(1).toLowerCase();
                 store.myPokemon.push(storedPokemon)
                 localStorage.setItem('my-pokemon', JSON.stringify(store.myPokemon));
             },
+
+            // Funzione che "rilascia" il pokemon presente nell'array myPokemon e aggiorna il local storage 
             releasePokemon(userInput){
                 const releasePokemon = userInput[0].toUpperCase() + userInput.slice(1).toLowerCase();
 
@@ -50,6 +59,8 @@
                     }
                 })
             },
+
+            // Funzione che recupera i dati salvati nel local storage
             fetchMyPokemon(){
                 const myPokemons = localStorage.getItem('my-pokemon');
 
