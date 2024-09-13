@@ -20,7 +20,7 @@ import { store } from '../store';
         <button @click="$emit('searchPokemon')" class="bg-white border-2 h-full rounded-r-sm border-red-950 border-l-0 hover:rounded-sm hover:outline hover:outline-white hover:border-blue-700 hover:border-l-2 hover:outline-1 px-3">🔍</button>
         <div v-if="store.searchedPokemon" class="flex grow justify-end">
             <button v-if="!store.myPokemon.includes(userInput[0].toUpperCase() + userInput.slice(1).toLowerCase()) && userInput === store.searchedPokemon.name" class="bg-slate-300 border-2 border-black px-5" @click="$emit('catchPokemon')">Catch!</button>
-            <button v-else-if="store.myPokemon.includes(userInput[0].toUpperCase() + userInput.slice(1).toLowerCase()) && userInput === store.searchedPokemon.name" class="bg-slate-300 border-2 border-black px-5" @click="$emit('releasePokemon')">Release!</button>
+            <button v-else-if="store.myPokemon.includes(userInput[0].toUpperCase() + userInput.slice(1).toLowerCase()) && userInput.toLowerCase() === store.searchedPokemon.name" class="bg-slate-300 border-2 border-black px-5" @click="$emit('releasePokemon')">Release!</button>
         </div>
     </section>
 </template>

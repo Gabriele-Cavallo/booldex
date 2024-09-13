@@ -30,7 +30,7 @@
             },
 
             // Funzione che a intervalli di 1.5s alterna la gif mostrata e se è attivo un intervall pulisce l'id
-            alternateGif(){{
+            alternateGif(){
                 if (this.intervalId) {
                     clearInterval(this.intervalId);
                 }
@@ -42,7 +42,7 @@
                         this.gif = 'back_default'
                     }
                 }, 1500)
-            }},
+            },
 
             // Funzione che richiama le funzioni getSinglePokemon e alternateGif
             pokemonSearchHandler(userInput){
@@ -90,13 +90,17 @@
     <section class="h-[90vh] grid grid-cols-2 px-40 place-items-center">
         <div class="border-8 border-red-950 w-full border-r-4  h-4/5 rounded-l-3xl bg-red-700">
            <div class="px-10 py-5 flex flex-col h-full">
-                <AppPokemonFinder @releasePokemon="releasePokemon(userInput)" @catchPokemon="catchPokemon(userInput)" @searchPokemon="pokemonSearchHandler(userInput)"  v-model:userInput = userInput />
+                <AppPokemonFinder 
+                    @releasePokemon="releasePokemon(userInput)" 
+                    @catchPokemon="catchPokemon(userInput)" 
+                    @searchPokemon="pokemonSearchHandler(userInput)"  
+                    v-model:userInput = userInput />
                 <AppPokedexDisplay :gif = "gif" />
                 <AppInfoPokemon />
            </div>
         </div>
         <div class="border-8 grid place-items-center border-red-950 border-l-4 w-full h-4/5 rounded-r-3xl bg-red-700">
-            <AppMyPokemon />
+            <AppMyPokemon @searchPokemon="pokemonSearchHandler" v-model:userInput = userInput />
         </div>
     </section>
 </template>
