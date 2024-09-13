@@ -52,7 +52,7 @@
 
             // Funzione che "cattura" il pokemon scelto nell'array myPokemon e nel local storage
             catchPokemon(userInput){
-                if(userInput === store.searchedPokemon.name) {
+                if(userInput.toLowerCase() === store.searchedPokemon.name) {
                     const storedPokemon = userInput[0].toUpperCase() + userInput.slice(1).toLowerCase();
                     store.myPokemon.push(storedPokemon)
                     localStorage.setItem('my-pokemon', JSON.stringify(store.myPokemon));
@@ -92,7 +92,7 @@
            <div class="px-10 py-5 flex flex-col h-full">
                 <AppPokemonFinder 
                     @releasePokemon="releasePokemon(userInput)" 
-                    @catchPokemon="catchPokemon(userInput.toLowerCase())" 
+                    @catchPokemon="catchPokemon(userInput)" 
                     @searchPokemon="pokemonSearchHandler(userInput)"  
                     v-model:userInput = userInput />
                 <AppPokedexDisplay :gif = "gif" />
