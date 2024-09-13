@@ -92,7 +92,7 @@
            <div class="px-10 py-5 flex flex-col h-full">
                 <AppPokemonFinder 
                     @releasePokemon="releasePokemon(userInput)" 
-                    @catchPokemon="catchPokemon(userInput)" 
+                    @catchPokemon="catchPokemon(userInput.toLowerCase())" 
                     @searchPokemon="pokemonSearchHandler(userInput)"  
                     v-model:userInput = userInput />
                 <AppPokedexDisplay :gif = "gif" />
