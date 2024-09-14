@@ -37,6 +37,21 @@
                 }
             },
 
+            // Function that reproduces a string in audio
+            stringToAudio(text) {
+                if (!('speechSynthesis' in window)) {
+                console.error('Web Speech API non supportata.');
+                return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'it-IT'; 
+                const voices = window.speechSynthesis.getVoices();
+                utterance.voice = voices.find(voice => voice.name === ' Microsoft Elsa Desktop - Italian (Italy)');
+                utterance.volume = 0.8;
+                window.speechSynthesis.speak(utterance);
+            },
+
             // Function that searches for the single pokemon via user input and starts the alternateGif function
             async getSinglePokemon(singlePokemonSearch){
                if(singlePokemonSearch !== ''){
@@ -47,7 +62,12 @@
                         if(data){
                             this.fetchError = ''
                             store.searchedPokemon = data;
-                            this.alternateGif()
+                            this.alternateGif();
+
+                            const pokemon = store.pokemons.find(p => p.name.toLowerCase() === singlePokemonSearch.toLowerCase());
+                            if (pokemon && pokemon.description) {
+                                this.stringToAudio(pokemon.description);
+                            }
                         }
 
                     } catch (error) {
