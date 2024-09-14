@@ -15,7 +15,7 @@ import { store } from '../../src/store.js';
 </script>
 
 <template>
-    <section class="mb-2 h-4/6 border-2 p-4 border-black bg-green-600 rounded-md overflow-y-auto">
+    <section class="mb-2 max-h-4/6 border-2 p-4 border-black bg-green-600 rounded-md overflow-y-auto">
         <div v-if="store.searchedPokemon">
             <div>
                 <strong>Name</strong>: {{ store.searchedPokemon.name }}
