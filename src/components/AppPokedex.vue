@@ -133,13 +133,3 @@
         </div>
     </section>
 </template>
-
-<style scoped>
-progress::-webkit-progress-value {
-    background-color: black; 
-}
-
-progress::-moz-progress-bar {
-    background-color: black; 
-}
-</style>

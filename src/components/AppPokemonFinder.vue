@@ -21,7 +21,7 @@ import { store } from '../store';
             placeholder="pokemon name" 
             :value="userInput" 
             @input="(event) => {$emit('update:userInput', event.target.value); $emit('resetResearch')}"  
-            class="w-1/3 h-full ps-1 outline-none border-2 border-r-0 rounded-s-sm border-red-950" 
+            class="w-1/3 h-full ps-1 outline-none border-2 border-r-0 rounded-s-sm border-red-950 text-sm" 
             type="text"
         >
 
