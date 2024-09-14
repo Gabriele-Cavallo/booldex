@@ -6,6 +6,7 @@
   import AppInfoPokemon from './AppInfoPokemon.vue';
   import AppMyPokemon from './AppMyPokemon.vue';
   import AppListPokedex from './AppListPokedex.vue';
+  import AppOnOff from './AppOnOff.vue';
 
     export default{
         name: 'AppPokedex',
@@ -14,15 +15,17 @@
             AppPokedexDisplay,
             AppInfoPokemon,
             AppMyPokemon,
-            AppListPokedex
+            AppListPokedex,
+            AppOnOff
         },
         data() {
             return {
                 store,
-                gif: 'back_default',
+                gif: 'front_default',
                 intervalId: null,
                 userInput: '',
-                fetchError: ''
+                fetchError: '',
+                onOff: false,
             }
         },
         methods: {
@@ -60,6 +63,7 @@
                         const data = await response.data;
 
                         if(data){
+                            window.speechSynthesis.cancel();
                             this.fetchError = ''
                             store.searchedPokemon = data;
                             this.alternateGif();
@@ -72,7 +76,8 @@
 
                     } catch (error) {
                         if (error.response || error.response.status === 404) {
-                            store.searchedPokemon = null
+                            store.searchedPokemon = null;
+                            window.speechSynthesis.cancel();
                             this.fetchError = 'Can\'t find any pokemon with this name!'
                         }
                     }
@@ -98,7 +103,7 @@
             catchPokemon(userInput){
                 if(userInput.toLowerCase() === store.searchedPokemon.name) {
                     const storedPokemon = userInput[0].toUpperCase() + userInput.slice(1).toLowerCase();
-                    store.myPokemon.push(storedPokemon)
+                    store.myPokemon.unshift(storedPokemon)
                     localStorage.setItem('my-pokemon', JSON.stringify(store.myPokemon));
                 }
             },
@@ -122,6 +127,16 @@
                 if(myPokemons){
                     store.myPokemon = JSON.parse(myPokemons);
                 }
+            },
+
+            turnOnOff(){
+                this.fetchError = ''
+                this.userInput = '';
+                if(store.searchedPokemon){
+                    store.searchedPokemon = null;
+                    clearInterval(this.intervalId);
+                    window.speechSynthesis.cancel();
+                }
             }
         },
         mounted(){
@@ -134,22 +149,25 @@
     <section class="h-[90vh] grid grid-cols-1 lg:grid-cols-2 px-40 place-items-center">
         <div class="px-10 py-5 flex flex-col border-8 border-red-950 border-r-8 lg:border-r-4 justify-self-end h-4/5  max-h-[80vh] lg:rounded-l-3xl rounded-3xl sm:rounded-3xl lg:rounded-none w-full lg:w-2/3 bg-red-700">
             <AppPokemonFinder 
+                :onOff = onOff
                 @releasePokemon="releasePokemon(userInput)" 
                 @catchPokemon="catchPokemon(userInput)" 
                 @searchPokemon="getSinglePokemon(userInput)"  
                 @resetResearch="resetResearch()"
                 v-model:userInput = userInput
                 />
-            <AppPokedexDisplay :gif = "gif" />
+            <AppPokedexDisplay :onOff = onOff :gif = "gif" />
             <AppInfoPokemon v-if="store.searchedPokemon !== null || fetchError !== ''" :fetchError = fetchError />
             <AppListPokedex 
+                :onOff = onOff
                 @searchPokemon="getSinglePokemon"
                 v-model:userInput = userInput
                 v-else-if="(store.searchedPokemon === null && userInput === '') || userInput !== ''"
             />
         </div>
-        <div class="invisible lg:visible border-8 grid place-items-center justify-self-start border-red-950 border-l-4 w-2/3 h-4/5 rounded-r-3xl bg-red-700">
-            <AppMyPokemon @searchPokemon="getSinglePokemon" v-model:userInput = userInput />
+        <div class="invisible relative lg:visible border-8 grid place-items-center justify-self-start border-red-950 border-l-4 w-2/3 h-4/5 rounded-r-3xl bg-red-700">
+            <AppOnOff v-model:onOff = onOff @turnOnOff="turnOnOff" />
+            <AppMyPokemon :onOff = onOff @searchPokemon="getSinglePokemon" v-model:userInput = userInput />
         </div>
     </section>
 </template>

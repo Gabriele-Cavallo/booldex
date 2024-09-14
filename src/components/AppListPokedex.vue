@@ -10,6 +10,9 @@ import { store } from '../store';
                 showScrollDown: true
             }
         },
+        props:{
+            onOff: Boolean
+        },
         methods: {
             // Function that scrolls the list up
             scrollUp() {
@@ -26,6 +29,8 @@ import { store } from '../store';
             // Function that uses ref to calculate the height of the container containing the element to be scrolled,
             // the height of the element to be scrolled and the states for displaying or hiding the buttons
             updateScrollButtons() {
+                this.$refs.scrollContainer.addEventListener('scroll', this.updateScrollButtons);
+
                 const container = this.$refs.scrollContainer;
                 const list = this.$refs.listHeight;
                 const scrollTop = container.scrollTop;
@@ -37,9 +42,9 @@ import { store } from '../store';
             }
         },
         mounted() {
-            this.updateScrollButtons();
+            // this.updateScrollButtons();
             this.showScrollDown = true;
-            this.$refs.scrollContainer.addEventListener('scroll', this.updateScrollButtons);
+            // this.$refs.scrollContainer.addEventListener('scroll', this.updateScrollButtons);
         },
         beforeDestroy() {
             this.$refs.scrollContainer.removeEventListener('scroll', this.updateScrollButtons);
@@ -57,13 +62,13 @@ import { store } from '../store';
             ▲
         </button>
         <button 
-            v-if="showScrollDown" 
+            v-if="showScrollDown && onOff" 
             @click="scrollDown" 
             class="absolute bottom-[5px] left-1/2 transform -translate-x-1/2 bg-transparent text-gray-800 text-2xl px-1"
         >
             ▼
         </button>
-        <div ref="scrollContainer" class="overflow-auto h-full">
+        <div v-if="onOff" ref="scrollContainer" class="overflow-auto h-full">
             <ol ref="listHeight"class="list-none p-0 m-0">
                 <li 
                     class="px-2 py-1 cursor-pointer hover:bg-green-800" 

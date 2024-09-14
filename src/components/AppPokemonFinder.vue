@@ -6,10 +6,13 @@ import { store } from '../store';
         data(){
             return{
                 store,
+                visible: 'visible',
+                invisible: 'invisible',
             }
         },
         props:{
-            userInput: String
+            userInput: String,
+            onOff: Boolean
         }
     }
 </script>
@@ -18,18 +21,19 @@ import { store } from '../store';
     <section class="mb-4 h-[40px] flex">
         <!-- Search input field -->
         <input 
-            placeholder="pokemon name" 
+            :placeholder="onOff ? 'pokemon name' : ''" 
             :value="userInput" 
             @input="(event) => {$emit('update:userInput', event.target.value); $emit('resetResearch')}"  
-            class="w-1/3 h-full ps-1 outline-none border-2 border-r-0 rounded-s-sm border-red-950 text-sm" 
+            class="w-1/3 h-full min-h-[34px] ps-1 outline-none border-2 border-r-0 rounded-s-sm border-red-950 text-sm" 
             type="text"
         >
 
         <!-- Start search button -->
         <button 
             @click="$emit('searchPokemon')" 
-            class="bg-white border-2 h-full rounded-r-sm border-red-950 border-l-0 hover:rounded-sm hover:outline hover:outline-white hover:border-blue-700 hover:border-l-2 hover:outline-1 px-3">
-            🔍
+            class="bg-white border-2 h-full rounded-r-sm border-red-950 border-l-0 hover:rounded-sm hover:outline hover:outline-white hover:border-blue-700 hover:border-l-2 hover:outline-1 px-3"
+        >
+            <span :class="[onOff ? visible : invisible]">🔍</span>
         </button>
 
         <!-- Pokemon catch/release button -->
