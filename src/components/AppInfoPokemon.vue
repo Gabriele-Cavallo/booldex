@@ -7,12 +7,15 @@ import { store } from '../../src/store.js';
             return{
                 store
             }
+        },
+        props: {
+            fetchError: String
         }
     }
 </script>
 
 <template>
-    <section class="mb-2 h-4/6 border-2 p-4 border-black bg-green-600 rounded-md">
+    <section class="mb-2 h-4/6 border-2 p-4 border-black bg-green-600 rounded-md overflow-y-auto">
         <div v-if="store.searchedPokemon">
             <div>
                 <strong>Name</strong>: {{ store.searchedPokemon.name }}
@@ -36,6 +39,6 @@ import { store } from '../../src/store.js';
                 </div>
             </div>
         </div>
-        <div v-else>No valid pokemon selected!</div>
+        <div v-else>{{ fetchError }}</div>
     </section>
 </template>

@@ -20,13 +20,22 @@
                 gif: 'back_default',
                 intervalId: null,
                 userInput: '',
+                fetchError: 'No valid pokemon selected!'
             }
         },
         methods: {
             // Funzione che cerca il singolo pokemon tramite user input
-            getSinglePokemon(singlePokemonSearch){
-                axios.get(`https://pokeapi.co/api/v2/pokemon/${singlePokemonSearch.toLowerCase().trim()}/`)
-                .then(response => store.searchedPokemon = response.data)
+            async getSinglePokemon(singlePokemonSearch){
+                try {
+                    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${singlePokemonSearch.toLowerCase().trim()}/`);
+                    const data = await response.data;
+                    store.searchedPokemon = data;
+                } catch (error) {
+                    if (error.response || error.response.status === 404) {
+                        store.searchedPokemon = null
+                        this.fetchError = 'Can\'t find any pokemon with this name!'
+                    }
+                }
             },
 
             // Funzione che a intervalli di 1.5s alterna la gif mostrata e se è attivo un intervall pulisce l'id
@@ -87,19 +96,17 @@
 </script>
 
 <template>
-    <section class="h-[90vh] grid grid-cols-2 px-40 place-items-center">
-        <div class="border-8 border-red-950 w-full border-r-4  h-4/5 rounded-l-3xl bg-red-700">
-           <div class="px-10 py-5 flex flex-col h-full">
-                <AppPokemonFinder 
-                    @releasePokemon="releasePokemon(userInput)" 
-                    @catchPokemon="catchPokemon(userInput)" 
-                    @searchPokemon="pokemonSearchHandler(userInput)"  
-                    v-model:userInput = userInput />
-                <AppPokedexDisplay :gif = "gif" />
-                <AppInfoPokemon />
-           </div>
+    <section class="h-[90vh] grid grid-cols-1 lg:grid-cols-2 px-40 place-items-center">
+        <div class="px-10 py-5 flex flex-col border-8 border-red-950 border-r-8 lg:border-r-4 justify-self-end h-4/5 lg:rounded-l-3xl rounded-3xl sm:rounded-3xl lg:rounded-none w-full lg:w-2/3 bg-red-700">
+            <AppPokemonFinder 
+                @releasePokemon="releasePokemon(userInput)" 
+                @catchPokemon="catchPokemon(userInput)" 
+                @searchPokemon="pokemonSearchHandler(userInput)"  
+                v-model:userInput = userInput />
+            <AppPokedexDisplay :gif = "gif" />
+            <AppInfoPokemon :fetchError = fetchError />
         </div>
-        <div class="border-8 grid place-items-center border-red-950 border-l-4 w-full h-4/5 rounded-r-3xl bg-red-700">
+        <div class="invisible lg:visible border-8 grid place-items-center justify-self-start border-red-950 border-l-4 w-2/3 h-4/5 rounded-r-3xl bg-red-700">
             <AppMyPokemon @searchPokemon="pokemonSearchHandler" v-model:userInput = userInput />
         </div>
     </section>
