@@ -10,8 +10,8 @@
 </script>
 
 <template>
-    <header class="h-[10vh] border-b-2 border-black">
-        <h1 class="h-full grid place-content-center">Booldex</h1>
+    <header class="h-[10vh] border-b-2 grid place-items-center border-black">
+        <img src="../../public/img/logo.png" alt="logo">
     </header>
 </template>
 
