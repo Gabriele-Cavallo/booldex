@@ -5,6 +5,7 @@
   import AppPokedexDisplay from './AppPokedexDisplay.vue';
   import AppInfoPokemon from './AppInfoPokemon.vue';
   import AppMyPokemon from './AppMyPokemon.vue';
+  import AppListPokedex from './AppListPokedex.vue';
 
     export default{
         name: 'AppPokedex',
@@ -12,7 +13,8 @@
             AppPokemonFinder,
             AppPokedexDisplay,
             AppInfoPokemon,
-            AppMyPokemon
+            AppMyPokemon,
+            AppListPokedex
         },
         data() {
             return {
@@ -20,22 +22,41 @@
                 gif: 'back_default',
                 intervalId: null,
                 userInput: '',
-                fetchError: 'No valid pokemon selected!'
+                fetchError: ''
             }
         },
         methods: {
+            // Funzione che resetta searchedPokemon e fetchError allo svuotamento del campo input
+            resetResearch(){
+                if(this.userInput.trim() === ''){
+                    store.searchedPokemon = null;
+                    this.fetchError = ''
+                }
+                if (this.intervalId) {
+                    clearInterval(this.intervalId);
+                }
+            },
+
             // Funzione che cerca il singolo pokemon tramite user input
             async getSinglePokemon(singlePokemonSearch){
-                try {
-                    const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${singlePokemonSearch.toLowerCase().trim()}/`);
-                    const data = await response.data;
-                    store.searchedPokemon = data;
-                } catch (error) {
-                    if (error.response || error.response.status === 404) {
-                        store.searchedPokemon = null
-                        this.fetchError = 'Can\'t find any pokemon with this name!'
+               if(singlePokemonSearch !== ''){
+                    try {
+                        const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${singlePokemonSearch.toLowerCase().trim()}/`);
+                        const data = await response.data;
+
+                        if(data){
+                            this.fetchError = ''
+                            store.searchedPokemon = data;
+                            this.alternateGif()
+                        }
+
+                    } catch (error) {
+                        if (error.response || error.response.status === 404) {
+                            store.searchedPokemon = null
+                            this.fetchError = 'Can\'t find any pokemon with this name!'
+                        }
                     }
-                }
+               }
             },
 
             // Funzione che a intervalli di 1.5s alterna la gif mostrata e se è attivo un intervall pulisce l'id
@@ -51,12 +72,6 @@
                         this.gif = 'back_default'
                     }
                 }, 1500)
-            },
-
-            // Funzione che richiama le funzioni getSinglePokemon e alternateGif
-            pokemonSearchHandler(userInput){
-                this.getSinglePokemon(userInput),
-                this.alternateGif()
             },
 
             // Funzione che "cattura" il pokemon scelto nell'array myPokemon e nel local storage
@@ -97,17 +112,20 @@
 
 <template>
     <section class="h-[90vh] grid grid-cols-1 lg:grid-cols-2 px-40 place-items-center">
-        <div class="px-10 py-5 flex flex-col border-8 border-red-950 border-r-8 lg:border-r-4 justify-self-end h-4/5 lg:rounded-l-3xl rounded-3xl sm:rounded-3xl lg:rounded-none w-full lg:w-2/3 bg-red-700">
+        <div class="px-10 py-5 flex flex-col border-8 border-red-950 border-r-8 lg:border-r-4 justify-self-end h-4/5  max-h-[80vh] lg:rounded-l-3xl rounded-3xl sm:rounded-3xl lg:rounded-none w-full lg:w-2/3 bg-red-700">
             <AppPokemonFinder 
                 @releasePokemon="releasePokemon(userInput)" 
                 @catchPokemon="catchPokemon(userInput)" 
-                @searchPokemon="pokemonSearchHandler(userInput)"  
-                v-model:userInput = userInput />
+                @searchPokemon="getSinglePokemon(userInput)"  
+                @resetResearch="resetResearch()"
+                v-model:userInput = userInput
+                />
             <AppPokedexDisplay :gif = "gif" />
-            <AppInfoPokemon :fetchError = fetchError />
+            <AppInfoPokemon v-if="store.searchedPokemon !== null || fetchError !== ''" :fetchError = fetchError />
+            <AppListPokedex v-else-if="(store.searchedPokemon === null && userInput === '') || userInput !== ''" />
         </div>
         <div class="invisible lg:visible border-8 grid place-items-center justify-self-start border-red-950 border-l-4 w-2/3 h-4/5 rounded-r-3xl bg-red-700">
-            <AppMyPokemon @searchPokemon="pokemonSearchHandler" v-model:userInput = userInput />
+            <AppMyPokemon @searchPokemon="getSinglePokemon" v-model:userInput = userInput />
         </div>
     </section>
 </template>
