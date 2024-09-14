@@ -26,7 +26,7 @@
             }
         },
         methods: {
-            // Funzione che resetta searchedPokemon e fetchError allo svuotamento del campo input
+            // Function that resets searchedPokemon and fetchError when the input field is empty and clear interval if it exist
             resetResearch(){
                 if(this.userInput.trim() === ''){
                     store.searchedPokemon = null;
@@ -37,7 +37,7 @@
                 }
             },
 
-            // Funzione che cerca il singolo pokemon tramite user input
+            // Function that searches for the single pokemon via user input and starts the alternateGif function
             async getSinglePokemon(singlePokemonSearch){
                if(singlePokemonSearch !== ''){
                     try {
@@ -59,7 +59,7 @@
                }
             },
 
-            // Funzione che a intervalli di 1.5s alterna la gif mostrata e se è attivo un intervall pulisce l'id
+            // Function that alternates the gif shown at intervals of 1.5s and if an interval is active it cleans the id
             alternateGif(){
                 if (this.intervalId) {
                     clearInterval(this.intervalId);
@@ -74,7 +74,7 @@
                 }, 1500)
             },
 
-            // Funzione che "cattura" il pokemon scelto nell'array myPokemon e nel local storage
+            // Function that "captures" the chosen Pokemon in the myPokemon array and in local storage
             catchPokemon(userInput){
                 if(userInput.toLowerCase() === store.searchedPokemon.name) {
                     const storedPokemon = userInput[0].toUpperCase() + userInput.slice(1).toLowerCase();
@@ -83,7 +83,7 @@
                 }
             },
 
-            // Funzione che "rilascia" il pokemon presente nell'array myPokemon e aggiorna il local storage 
+            // Function that "releases" the Pokemon present in the myPokemon array and updates the local storage 
             releasePokemon(userInput){
                 const releasePokemon = userInput[0].toUpperCase() + userInput.slice(1).toLowerCase();
 
@@ -95,7 +95,7 @@
                 })
             },
 
-            // Funzione che recupera i dati salvati nel local storage
+            // Function that recovers data saved in local storage
             fetchMyPokemon(){
                 const myPokemons = localStorage.getItem('my-pokemon');
 
@@ -122,7 +122,11 @@
                 />
             <AppPokedexDisplay :gif = "gif" />
             <AppInfoPokemon v-if="store.searchedPokemon !== null || fetchError !== ''" :fetchError = fetchError />
-            <AppListPokedex v-else-if="(store.searchedPokemon === null && userInput === '') || userInput !== ''" />
+            <AppListPokedex 
+                @searchPokemon="getSinglePokemon"
+                v-model:userInput = userInput
+                v-else-if="(store.searchedPokemon === null && userInput === '') || userInput !== ''"
+            />
         </div>
         <div class="invisible lg:visible border-8 grid place-items-center justify-self-start border-red-950 border-l-4 w-2/3 h-4/5 rounded-r-3xl bg-red-700">
             <AppMyPokemon @searchPokemon="getSinglePokemon" v-model:userInput = userInput />

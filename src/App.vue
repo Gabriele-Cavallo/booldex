@@ -15,6 +15,7 @@
       }
     },
     methods: {
+      // Function that recovers all the first 151 pokemon
       getAllPokemon(){
         axios.get('https://pokeapi.co/api/v2/pokemon/?limit=151')
         .then(response => this.store.pokedex = response.data.results)
