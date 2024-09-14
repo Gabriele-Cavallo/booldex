@@ -33,7 +33,3 @@
     <AppPokedex />
   </main>
 </template>
-
-<style scoped>
-
-</style>
