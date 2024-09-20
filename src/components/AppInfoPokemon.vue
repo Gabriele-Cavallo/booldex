@@ -34,7 +34,7 @@ import { store } from '../../src/store.js';
                 <div class="flex items-center justify-between" v-for="stat in store.searchedPokemon.stats">
                     <span>{{ stat.stat.name }}</span>
                     <div class="h-full flex items-center w-1/2 border-2 border-black">
-                        <progress class="w-full h-[10px] bg-transparent" max="100" :value="stat.base_stat"></progress>
+                        <progress class="w-full h-[10px] bg-transparent" max="255" :value="stat.base_stat"></progress>
                     </div>
                 </div>
             </div>

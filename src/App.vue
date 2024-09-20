@@ -29,7 +29,7 @@
 
 <template>
   <AppHeader />
-  <main>
+  <main class="bg-[url(../public/img/bg.jpg)] bg-cover bg-no-repeat">
     <AppPokedex />
   </main>
 </template>

@@ -29,25 +29,43 @@ import { store } from '../store';
             // Function that uses ref to calculate the height of the container containing the element to be scrolled,
             // the height of the element to be scrolled and the states for displaying or hiding the buttons
             updateScrollButtons() {
-                this.$refs.scrollContainer.addEventListener('scroll', this.updateScrollButtons);
-
                 const container = this.$refs.scrollContainer;
                 const list = this.$refs.listHeight;
-                const scrollTop = container.scrollTop;
-                const scrollHeight = list.scrollHeight;
-                const clientHeight = container.clientHeight;
 
-                this.showScrollUp = scrollTop > 0;
-                this.showScrollDown = scrollTop < (scrollHeight - clientHeight);
+                if(container && list){
+                    const scrollTop = container.scrollTop;
+                    const scrollHeight = list.scrollHeight;
+                    const clientHeight = container.clientHeight;
+
+                    this.showScrollUp = scrollTop > 0;
+                    this.showScrollDown = scrollTop < (scrollHeight - clientHeight);
+                }
             }
         },
         mounted() {
-            // this.updateScrollButtons();
-            this.showScrollDown = true;
-            // this.$refs.scrollContainer.addEventListener('scroll', this.updateScrollButtons);
+            this.$nextTick(() => {
+                if (this.onOff && this.$refs.scrollContainer) {
+                    this.updateScrollButtons();
+                    this.$refs.scrollContainer.addEventListener('scroll', this.updateScrollButtons);
+                }
+            });
+        },
+        watch: {
+            onOff(newVal) {
+                this.$nextTick(() => {
+                    if (newVal && this.$refs.scrollContainer && this.$refs.listHeight) {
+                        this.updateScrollButtons();
+                        this.$refs.scrollContainer.addEventListener('scroll', this.updateScrollButtons);
+                    } else if (this.$refs.scrollContainer) {
+                        this.$refs.scrollContainer.removeEventListener('scroll', this.updateScrollButtons);
+                    }
+                });
+            }
         },
         beforeDestroy() {
-            this.$refs.scrollContainer.removeEventListener('scroll', this.updateScrollButtons);
+            if (this.$refs.scrollContainer) {
+                this.$refs.scrollContainer.removeEventListener('scroll', this.updateScrollButtons);
+            }
         }
     }
 </script>
